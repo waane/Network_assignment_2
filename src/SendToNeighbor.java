@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.*;
 
 import javax.sql.ConnectionEvent;
 
@@ -13,8 +14,7 @@ public class SendToNeighbor implements Runnable {
 	private Neighbor _neighbor = null;
 
 	public SendToNeighbor(Neighbor neighbor) {
-		_neighbor = new Neighbor(neighbor.routerName, neighbor.port,
-				neighbor.weight);
+		_neighbor = new Neighbor(neighbor.routerName, neighbor.port, neighbor.weight);
 	}// initialize sendtoNeighbor class with neighbors information.
 
 	@Override
@@ -51,7 +51,8 @@ public class SendToNeighbor implements Runnable {
 	private void send(Socket toNeighborNode) {
 		try {
 			ObjectOutputStream toNeighborStream = new ObjectOutputStream(toNeighborNode.getOutputStream());
-			toNeighborStream.writeObject(DVImpl.distanceVector);
+			
+			toNeighborStream.writeObject(new VectorOnWire(DVImpl.myName, DVImpl.myVector));
 			toNeighborStream.close();
 		} catch (IOException e) {
 
